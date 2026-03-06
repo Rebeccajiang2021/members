@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蘑菇云创客空间会员购买</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#10b981',
+                        dark: '#1e293b',
+                    },
+                },
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div id="app" class="min-h-screen flex flex-col">
+        <header class="bg-primary text-white shadow-md">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <h1 class="text-xl sm:text-2xl font-bold">蘑菇云创客空间</h1>
+                <div class="text-xs sm:text-sm">
+                    <i class="fa fa-map-marker mr-1"></i> 上海市浦东新区郭守敬路498号4号1楼
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-6 sm:py-8">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-dark">会员购买</h2>
+                        <div class="flex items-center space-x-2">
+                            <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold', currentStep >= 0 ? 'bg-primary' : 'bg-gray-300']">1</div>
+                            <div class="w-8 h-0.5" :class="currentStep >= 1 ? 'bg-primary' : 'bg-gray-300'"></div>
+                            <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold', currentStep >= 1 ? 'bg-primary' : 'bg-gray-300']">2</div>
+                            <div class="w-8 h-0.5" :class="currentStep >= 2 ? 'bg-primary' : 'bg-gray-300'"></div>
+                            <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold', currentStep >= 2 ? 'bg-primary' : 'bg-gray-300']">3</div>
+                        </div>
+                    </div>
+
+                    <div v-if="currentStep === 0" class="space-y-4">
+                        <p class="text-gray-600 text-center mb-6">请选择会员类型</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div 
+                                @click="selectMemberType('半年期')"
+                                :class="['border-2 rounded-lg p-5 cursor-pointer transition-all', formData.memberType === '半年期' ? 'border-primary bg-blue-50' : 'hover:border-primary hover:bg-blue-50']"
+                            >
+                                <h3 class="text-lg font-semibold mb-2">半年期会员</h3>
+                                <div class="text-2xl font-bold text-primary mb-3">¥1000</div>
+                                <p class="text-gray-600 text-sm">服务期限：6个月</p>
+                            </div>
+                            <div 
+                                @click="selectMemberType('一年期')"
+                                :class="['border-2 rounded-lg p-5 cursor-pointer transition-all relative', formData.memberType === '一年期' ? 'border-primary bg-blue-50' : 'hover:border-primary hover:bg-blue-50']"
+                            >
+                                <div class="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-1 rounded">优惠</div>
+                                <h3 class="text-lg font-semibold mb-2">一年期会员</h3>
+                                <div class="text-2xl font-bold text-primary mb-3">¥1800</div>
+                                <p class="text-gray-600 text-sm">服务期限：12个月</p>
+                            </div>
+                        </div>
+                        <button 
+                            @click="nextStep"
+                            :disabled="!formData.memberType"
+                            class="w-full mt-6 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all"
+                        >
+                            下一步 <i class="fa fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+
+                    <div v-if="currentStep === 1" class="space-y-6">
+                        <div class="bg-gray-50 rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <span class="text-gray-600">会员类型：</span>
+                                <span class="font-medium">{{ formData.memberType }}</span>
+                            </div>
+                            <span class="text-2xl font-bold text-primary">{{ formData.memberType === '半年期' ? '¥1000' : '¥1800' }}</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="font-semibold text-dark border-b pb-2">基本信息</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">姓名/名称 *</label>
+                                    <input v-model="formData.name" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入姓名或单位名称" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">身份证号/统一社会信用代码 *</label>
+                                    <input v-model="formData.idNumber" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入身份证号或信用代码" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">联系地址 *</label>
+                                <input v-model="formData.address" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入联系地址" required>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">联系方式 *</label>
+                                    <input v-model="formData.phone" type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入手机号码" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                                    <input v-model="formData.email" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入邮箱地址">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="font-semibold text-dark border-b pb-2">发票信息</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">发票类型 *</label>
+                                    <select v-model="formData.invoiceType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                                        <option value="">请选择</option>
+                                        <option value="增值税普通发票">增值税普通发票</option>
+                                        <option value="增值税专用发票">增值税专用发票</option>
+                                        <option value="不需要发票">不需要发票</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">支付方式 *</label>
+                                    <select v-model="formData.paymentMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                                        <option value="">请选择</option>
+                                        <option value="微信">微信</option>
+                                        <option value="支付宝">支付宝</option>
+                                        <option value="银行转账">银行转账</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div v-if="formData.invoiceType && formData.invoiceType !== '不需要发票'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">发票抬头 *</label>
+                                    <input v-model="formData.invoiceTitle" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入发票抬头">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">税号 *</label>
+                                    <input v-model="formData.taxNumber" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入纳税人识别号">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="font-semibold text-dark border-b pb-2">身份信息（学生/教师/创客需填写）</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">身份类型</label>
+                                    <select v-model="formData.identityType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                                        <option value="">请选择（可选）</option>
+                                        <option value="学生">学生</option>
+                                        <option value="教师">教师</option>
+                                        <option value="创客">创客</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">身份证明文件编号</label>
+                                    <input v-model="formData.identityDocNumber" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="如学生证号、教师证号">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="font-semibold text-dark border-b pb-2">会员服务日期</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">服务开始日期 *</label>
+                                    <input v-model="formData.serviceStartDate" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">服务截止日期</label>
+                                    <input :value="serviceEndDate" type="date" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50" readonly>
+                                    <p class="text-xs text-gray-500 mt-1">根据会员类型自动计算</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">备注</label>
+                            <textarea v-model="formData.remark" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入备注信息"></textarea>
+                        </div>
+
+                        <div class="flex gap-3 pt-4">
+                            <button @click="prevStep" class="flex-1 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-all">
+                                <i class="fa fa-arrow-left mr-2"></i> 上一步
+                            </button>
+                            <button @click="nextStep" class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-600 transition-all">
+                                下一步 <i class="fa fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div v-if="currentStep === 2" class="space-y-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="font-semibold mb-3">订单信息确认</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between"><span class="text-gray-600">会员类型：</span><span class="font-medium">{{ formData.memberType }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-600">金额：</span><span class="font-bold text-primary">{{ formData.amount === '1000' ? '¥1000' : '¥1800' }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-600">姓名/名称：</span><span class="font-medium">{{ formData.name }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-600">联系方式：</span><span class="font-medium">{{ formData.phone }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-600">支付方式：</span><span class="font-medium">{{ formData.paymentMethod }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-600">服务开始日期：</span><span class="font-medium">{{ formData.serviceStartDate }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-600">服务截止日期：</span><span class="font-medium">{{ serviceEndDate }}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <h3 class="font-semibold mb-4">请使用微信扫码支付</h3>
+                            <div class="inline-block p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                <img src="qrcode.jpg" alt="微信收款码" class="w-44 h-44 sm:w-52 sm:h-52">
+                            </div>
+                            <p class="text-sm text-gray-500 mt-3">
+                                请扫描上方二维码支付 <span class="font-bold text-primary text-lg">{{ formData.amount === '1000' ? '¥1000' : '¥1800' }}</span>
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <h4 class="font-medium text-yellow-800 mb-2"><i class="fa fa-info-circle mr-2"></i>支付说明</h4>
+                            <ol class="text-sm text-yellow-700 space-y-1 list-decimal list-inside">
+                                <li>扫描上方二维码完成支付</li>
+                                <li>支付完成后，点击下方按钮提交订单</li>
+                                <li>我们将在确认收到款项后开通会员服务</li>
+                            </ol>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button @click="prevStep" class="flex-1 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-all">
+                                <i class="fa fa-arrow-left mr-2"></i> 返回修改
+                            </button>
+                            <button @click="submitOrder" :disabled="isSubmitting" class="flex-1 bg-secondary text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 disabled:bg-gray-300 transition-all">
+                                <span v-if="isSubmitting"><i class="fa fa-spinner fa-spin mr-2"></i>提交中...</span>
+                                <span v-else><i class="fa fa-check mr-2"></i>已支付，提交订单</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div v-if="currentStep === 3" class="text-center py-8">
+                        <div class="inline-block p-4 bg-green-100 rounded-full mb-6">
+                            <i class="fa fa-check text-4xl text-secondary"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-dark mb-4">订单提交成功！</h2>
+                        <p class="text-gray-600 mb-6">
+                            感谢您的购买！我们将在确认收到款项后尽快开通会员服务。<br>
+                            如有疑问请联系管理员。
+                        </p>
+                        <button @click="resetForm" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-600 transition-all">
+                            返回首页
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-white rounded-lg shadow-md p-4 sm:p-6">
+                    <h3 class="font-semibold text-dark mb-4">会员服务内容</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600">
+                        <div class="flex items-center"><i class="fa fa-check text-secondary mr-2"></i> 场地使用（9:00-22:00）</div>
+                        <div class="flex items-center"><i class="fa fa-check text-secondary mr-2"></i> 设备与工具使用</div>
+                        <div class="flex items-center"><i class="fa fa-check text-secondary mr-2"></i> 活动与培训参与</div>
+                        <div class="flex items-center"><i class="fa fa-check text-secondary mr-2"></i> 技术支持与咨询</div>
+                        <div class="flex items-center"><i class="fa fa-check text-secondary mr-2"></i> 停车预约权益</div>
+                        <div class="flex items-center"><i class="fa fa-check text-secondary mr-2"></i> 建议权</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-dark text-white py-4">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-sm text-gray-400">© 2024 蘑菇云创客空间 · 上海市浦东新区郭守敬路498号4号1楼</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const { createApp } = Vue
+        createApp({
+            data() {
+                return {
+                    currentStep: 0,
+                    isSubmitting: false,
+                    formData: {
+                        memberType: '',
+                        amount: '',
+                        name: '',
+                        idNumber: '',
+                        address: '',
+                        phone: '',
+                        email: '',
+                        invoiceType: '',
+                        paymentMethod: '',
+                        invoiceTitle: '',
+                        taxNumber: '',
+                        identityType: '',
+                        identityDocNumber: '',
+                        serviceStartDate: '',
+                        remark: ''
+                    }
+                }
+            },
+            computed: {
+                serviceEndDate() {
+                    if (!this.formData.serviceStartDate || !this.formData.memberType) return ''
+                    const startDate = new Date(this.formData.serviceStartDate)
+                    const months = this.formData.memberType === '半年期' ? 6 : 12
+                    startDate.setMonth(startDate.getMonth() + months)
+                    return startDate.toISOString().split('T')[0]
+                }
+            },
+            methods: {
+                selectMemberType(type) {
+                    this.formData.memberType = type
+                    this.formData.amount = type === '半年期' ? '1000' : '1800'
+                },
+                nextStep() {
+                    if (this.currentStep === 1) {
+                        if (!this.formData.name || !this.formData.idNumber || !this.formData.address || !this.formData.phone) {
+                            alert('请填写必填信息')
+                            return
+                        }
+                        if (!this.formData.invoiceType || !this.formData.paymentMethod) {
+                            alert('请选择发票类型和支付方式')
+                            return
+                        }
+                        if (!this.formData.serviceStartDate) {
+                            alert('请选择服务开始日期')
+                            return
+                        }
+                        if (this.formData.invoiceType !== '不需要发票') {
+                            if (!this.formData.invoiceTitle || !this.formData.taxNumber) {
+                                alert('请填写发票抬头和税号')
+                                return
+                            }
+                        }
+                    }
+                    this.currentStep++
+                },
+                prevStep() {
+                    this.currentStep--
+                },
+                async submitOrder() {
+                    this.isSubmitting = true
+                    try {
+                        const response = await fetch('/api/submit', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(this.formData)
+                        })
+                        const result = await response.json()
+                        if (result.success) {
+                            this.currentStep = 3
+                        } else {
+                            alert('提交失败：' + (result.error?.message || JSON.stringify(result.error)))
+                        }
+                    } catch (error) {
+                        alert('提交失败：' + error.message)
+                    }
+                    this.isSubmitting = false
+                },
+                resetForm() {
+                    this.currentStep = 0
+                    this.formData = {
+                        memberType: '',
+                        amount: '',
+                        name: '',
+                        idNumber: '',
+                        address: '',
+                        phone: '',
+                        email: '',
+                        invoiceType: '',
+                        paymentMethod: '',
+                        invoiceTitle: '',
+                        taxNumber: '',
+                        identityType: '',
+                        identityDocNumber: '',
+                        serviceStartDate: '',
+                        remark: ''
+                    }
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
